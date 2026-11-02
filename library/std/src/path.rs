@@ -3081,7 +3081,9 @@ impl Path {
     }
 
     fn _join(&self, path: &Path) -> PathBuf {
-        let mut buf = self.to_path_buf();
+        let self_os = self.as_os_str();
+        let mut buf = PathBuf::with_capacity(self_os.len() + 1 + path.as_os_str().len());
+        buf.inner.push(self_os);
         buf.push(path);
         buf
     }
