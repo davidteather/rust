@@ -131,3 +131,31 @@ fn bench_hash_path_long(b: &mut test::Bencher) {
 
     black_box(hasher.finish());
 }
+
+#[bench]
+fn bench_path_join_short(b: &mut test::Bencher) {
+    let base = Path::new("src");
+    let file = Path::new("main.rs");
+
+    b.iter(|| black_box(base).join(black_box(file)));
+}
+
+#[bench]
+fn bench_path_join_typical(b: &mut test::Bencher) {
+    let base = Path::new("/home/user/projects/my-crate/src/some/module");
+    let file = Path::new("submodule_file_name.rs");
+
+    b.iter(|| black_box(base).join(black_box(file)));
+}
+
+#[bench]
+fn bench_path_join_many(b: &mut test::Bencher) {
+    let base = Path::new("/home/user/projects/my-crate/target/debug/deps");
+    let names: Vec<String> = (0..1000).map(|i| format!("file_{i}.rlib")).collect();
+
+    b.iter(|| {
+        for name in &names {
+            black_box(black_box(base).join(black_box(name)));
+        }
+    });
+}
